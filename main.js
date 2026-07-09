@@ -358,5 +358,64 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* ─── FAQ ACCORDION ─── */
+  const faqTriggers = document.querySelectorAll('.faq-trigger');
+  faqTriggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.faq-item');
+      const panel = item.querySelector('.faq-panel');
+      const isActive = item.classList.contains('active');
+
+      // Close all other items
+      document.querySelectorAll('.faq-item').forEach(otherItem => {
+        if (otherItem !== item && otherItem.classList.contains('active')) {
+          otherItem.classList.remove('active');
+          otherItem.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
+          otherItem.querySelector('.faq-panel').style.maxHeight = null;
+          otherItem.querySelector('.faq-panel').style.opacity = '0';
+        }
+      });
+
+      // Toggle current item
+      if (isActive) {
+        item.classList.remove('active');
+        trigger.setAttribute('aria-expanded', 'false');
+        panel.style.maxHeight = null;
+        panel.style.opacity = '0';
+      } else {
+        item.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        panel.style.opacity = '1';
+      }
+    });
+  });
+
+  /* ─── AUTO-SELECT SERVICE FROM URL ─── */
+  const urlParams = new URLSearchParams(window.location.search);
+  const serviceParam = urlParams.get('service');
+  if (serviceParam) {
+    const checkboxMap = {
+      'wordpress': 'svc-wp',
+      'shopify': 'svc-shopify',
+      'uiux': 'svc-uiux',
+      'graphics': 'svc-graphics'
+    };
+    const checkboxId = checkboxMap[serviceParam.toLowerCase()];
+    if (checkboxId) {
+      const checkbox = document.getElementById(checkboxId);
+      if (checkbox) {
+        checkbox.checked = true;
+        // Smooth scroll to the contact form section after a slight delay
+        setTimeout(() => {
+          const contactSection = document.getElementById('contact');
+          if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 400);
+      }
+    }
+  }
+
   console.log('%c🚀 Code Fuhrer — Built with passion.', 'color:#F44923;font-size:14px;font-weight:bold;');
 });
